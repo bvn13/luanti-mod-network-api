@@ -65,6 +65,7 @@ mineysocket.log("action", os.getenv("IPV4"))
 -- configuration
 mineysocket.host_ip = minetest.settings:get("mineysocket.host_ip")
 mineysocket.host_port = minetest.settings:get("mineysocket.host_port")
+mineysocket.auth = minetest.settings:get("mineysocket.auth")
 
 -- Workaround for bug, where default values return only nil
 if not mineysocket.host_ip then
@@ -72,6 +73,9 @@ if not mineysocket.host_ip then
 end
 if not mineysocket.host_port then
   mineysocket.host_port = 29999
+end
+if not mineysocket.auth then
+  mineysocket.auth = true
 end
 
 mineysocket.debug = false  -- set to true to show all log levels
@@ -149,7 +153,7 @@ mineysocket.receive = function()
       mineysocket["socket_clients"][clientid].buffer = ""
       mineysocket["socket_clients"][clientid].eom = nil
 
-      if ip == "127.0.0.1" then  -- skip authentication for 127.0.0.1
+      if not mineysocket.auth or ip == "127.0.0.1" then  -- skip authentication for 127.0.0.1
         mineysocket["socket_clients"][clientid].auth = true
         mineysocket["socket_clients"][clientid].playername = "localhost"
         mineysocket["socket_clients"][clientid].events = {}
